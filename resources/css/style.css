@@ -449,7 +449,7 @@ section{
    transform: translateY(0%);
 } */
 /*animation-2*/
-/* .card--c1{
+.card--c1{
    position: absolute;
    top:100%;
    left: 22%;
@@ -469,12 +469,12 @@ section{
 
 .slide-in.active{
    transform: translateY(-70%);
-} */
+}
 
 /*-------------------------------------*/
 
-/*animation-3*/
-.card--c1{
+/*animation-3*/ 
+/* .card--c1{
    position: absolute;
    top:30%;
    right: -51%;
@@ -492,7 +492,7 @@ section{
 .slide-in.active{
    transform: rotate(-20deg);  
    transform-origin: 0% 100%; 
-}
+} */
 
 /*-------------------------------------*/
 .slide-in{

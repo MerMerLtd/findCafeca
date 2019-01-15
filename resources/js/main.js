@@ -52,8 +52,8 @@ function scrollHandler (){
         // 卡片底部位置
         const cardBottom = cardY + card.offsetHeight;
         //當瀏覽器底部跑到卡片一半位置下方時
-        const isHalfShown = slideInAt > cardY - card.offsetHeight/2 ;//animation2
-        // const isHalfShown = slideInAt > cardY - card.offsetHeight;//animation1, animation3
+        // const isHalfShown = slideInAt > cardY - card.offsetHeight/2 ;//animation2
+        const isHalfShown = slideInAt > cardY - card.offsetHeight;//animation1, animation3
         // 瀏覽器底部還沒通過卡片底部時
         const isNotScrolledPast = window.scrollY < cardY + card.offsetHeight/4;//animation2
         // const isNotScrolledPast = window.scrollY < cardY- card.offsetHeight/2;//animation1, animation3
@@ -151,7 +151,8 @@ cards.forEach((card, i) => card.addEventListener('touchstart', (event) => {
     index = i;
 }));
 
-cards.forEach(card => card.addEventListener('touchend', (event) => {
+cards.forEach(card => card.addEventListener('touchmove', (event) => {
+// cards.forEach(card => card.addEventListener('touchend', (event) => {
     endX = event.changedTouches[0].pageX; 
     endY = event.changedTouches[0].pageY;
 }));
