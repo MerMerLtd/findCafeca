@@ -169,7 +169,7 @@ const dropZones = document.querySelectorAll(".dropzone");
 
 cards.forEach(card => {
     card.onmousedown = function(event) {
-        console.log(event);
+        // console.log(event);
         let shiftX = event.clientX - card.getBoundingClientRect().left;
         let shiftY = event.clientY - card.getBoundingClientRect().top;
       
@@ -207,8 +207,8 @@ cards.forEach(card => {
       // touch
       card.ontouchstart = function(event) {
         event.preventDefault(); 
-        if(event.targetTouches.length === 1){
-            let touchPoint = event.targetTouches[0]; 
+        if(event.targetTouches.length === 1 && isCardBoxEmpty){
+            let touchPoint = event.targetTouches[0];//獲取觸摸的初始位置 touchPoint.clientX & touchPoint.clientY
             let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
             let shiftY = touchPoint.clientY - card.getBoundingClientRect().top;
 
@@ -225,8 +225,8 @@ cards.forEach(card => {
             }
         
             function onTouchMove(event) {
-                event.preventDefault(); 
-                moveAt(event.pageX, event.pageY);
+                // console.log(event.changedTouches[0].pageX, event.changedTouches[0].pageY,touchPoint.pageY);
+                moveAt(event.targetTouches[0].pageX, event.targetTouches[0].pageY);
             }
         
             // (3) move the card on mousemove
@@ -242,6 +242,10 @@ cards.forEach(card => {
               };
         }  
       }; 
+      dropZones[0].addEventListener("mouseover", (event) => {
+          event.preventDefault();
+          alert(event.target);
+      }, false);
 });
 
 // const down = (event) => {
