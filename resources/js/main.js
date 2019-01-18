@@ -156,59 +156,110 @@ let direction = getSlideDirection(startX, startY, endX, endY);
 
 
 //------------------------- drag & drop --------------------------
-//1. https://www.w3schools.com/html/html5_draganddrop.asp
-//2. https://javascript.info/mouse-drag-and-drop
-//3. https://developer.mozilla.org/en-US/docs/Web/Events/drag (用這個)
-var dragged;
-        /* events fired on the draggable target */
-        document.addEventListener("drag", function( event ) {
+
+let isCardBoxEmpty = true;
+let isInCarBox = false;
+// let isDraggable = false; // 只有持續點滑鼠或是單指持續接觸obj時才可以拖移
+// let draggedObj = null;
+// let touchPoint = null;
+// let shiftX, shiftY = 0;// 記住手指點在卡片上的位置
+
+// const cards = document.querySelectorAll(".card");
+const dropZones = document.querySelectorAll(".dropzone");
+
+cards.forEach(card => {
+    card.onmousedown = function(event) {
+
+        let shiftX = event.clientX - card.getBoundingClientRect().left;
+        let shiftY = event.clientY - card.getBoundingClientRect().top;
       
-        }, false);
+        card.style.position = 'absolute';
+        card.style.zIndex = 1000;
+        document.body.append(card);
       
-        document.addEventListener("dragstart", function( event ) {
-            ondragstart=event.dataTransfer.setData('text/plain',null);
-            // store a ref. on the dragged elem
-            dragged = event.target;
-            // make it half transparent
-            // event.target.style.opacity = .5;
-        }, false);
+        moveAt(event.pageX, event.pageY);
       
-        document.addEventListener("dragend", function( event ) {
-            // reset the transparency
-            event.target.style.opacity = "";
-        }, false);
+        // centers the card at (pageX, pageY) coordinates
+        function moveAt(pageX, pageY) {
+          card.style.left = pageX - shiftX + 'px';
+          card.style.top = pageY - shiftY + 'px';
+        }
       
-        /* events fired on the drop targets */
-        document.addEventListener("dragover", function( event ) {
-            // prevent default to allow drop
-            event.preventDefault();
-        }, false);
+        function onMouseMove(event) {
+          moveAt(event.pageX, event.pageY);
+        }
       
-        document.addEventListener("dragenter", function( event ) {
-            // highlight potential drop target when the draggable element enters it
-            if ( event.target.className.includes("dropzone")) {
-                event.target.style.background = "#adadad";
-            }
+        // (3) move the card on mousemove
+        document.addEventListener('mousemove', onMouseMove);
       
-        }, false);
+        // (4) drop the card, remove unneeded handlers
+        card.onmouseup = function() {
+          document.removeEventListener('mousemove', onMouseMove);
+          card.onmouseup = null;
+        };
       
-        document.addEventListener("dragleave", function( event ) {
-            // reset background of potential drop target when the draggable element leaves it
-            if ( event.target.className.includes("dropzone")) {
-                event.target.style.background = "";
-            }
+      };
       
-        }, false);
-      
-        document.addEventListener("drop", function( event ) {
-            // prevent default action (open as link for some elements)
-            event.preventDefault();
-            // move dragged elem to the selected drop target
-            if ( event.target.className.includes("dropzone")) {
-                console.log(event.target.className);
-                event.target.style.background = "";
-                dragged.parentNode.removeChild( dragged );
-                event.target.appendChild( dragged );
-            }
-          
-        }, false);
+      card.ondragstart = function() {
+        return false;
+      };
+});
+
+// const down = (event) => {
+//     let ev = event || window.event;
+//     ev.preventDefault();
+//     // if(ev.targetTouches.length === 1){
+//         // touchPoint = ev.targetTouches[0] || null;
+//         isDraggable = true
+//         draggedObj = ev.target.parentNode.parentNode;
+//         // document.body.append(draggedObj);
+//         // console.log(draggedObj);
+
+//     // }
+// }
+// const move = (event) => {
+//     let ev = event || window.event;
+//     ev.preventDefault();
+//     if(isDraggable){
+//         console.log(ev.clientX, ev.clientY, "client");
+//         console.log(draggedObj.getBoundingClientRect().left, draggedObj.getBoundingClientRect().top, "getBoundingClientRect");
+//         console.log(ev.pageX, ev.pageY, "page")
+//         shiftX = ev.clientX - draggedObj.getBoundingClientRect().left;
+//         shiftY = ev.clientY - draggedObj.getBoundingClientRect().top;
+//         draggedObj.style.zIndex = "10";
+//         draggedObj.style.left = ev.clientX - shiftX + "px";
+//         draggedObj.style.top = ev.clientY - shiftY + "px";
+//         console.log(draggedObj);
+//     }
+// }
+// const up = (event) => {
+//     let ev = event || window.event;
+//     isDraggable = false
+//     // draggedObj = null;
+// }
+// const over = (event) => {
+//     let ev = event || window.event;
+// }
+// const out = (event) => {
+//     let ev = event || window.event;
+// }
+
+
+// cards.forEach(card => {
+//     // 網頁版
+//     card.addEventListener("mousedown", down, false);
+//     card.addEventListener("mousemove", move, false);
+//     card.addEventListener("mouseup", up, false);
+
+//     //行動端
+//     card.addEventListener("touchstart", down, false);
+//     card.addEventListener("touchmove", move, false);
+//     card.addEventListener("touchend", up, false);
+// });
+
+// dropZones.forEach(dropZone => {
+//     dropZone.addEventListener("mouseover", over, false);
+//     dropZone.addEventListener("mouseout", out, false);
+// });
+
+

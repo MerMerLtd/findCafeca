@@ -392,8 +392,8 @@ section{
    width: 100%;
    border-radius: 3px;
    box-shadow: .1rem .1rem 1rem rgba(0, 0, 0, 0.15);
-   transition: transform 0.8s ease-out;
-   transform-style: preserve-3d;
+   /* transition: transform 0.8s ease-out;
+   transform-style: preserve-3d; */
 }
 .card__side--front,
 .card__side--back{
@@ -416,14 +416,13 @@ section{
 }
 .card__logo{
    width: 100%;
-   /* overflow: hidden; */
 }
 /* .card:hover .card__side{
    transform: rotateY(180deg);
 } */
-.card:hover {
+/* .card:hover {
    z-index: 10;
-}
+} */
 
 .card__box{
    height: 20rem;
