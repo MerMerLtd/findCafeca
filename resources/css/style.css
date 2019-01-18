@@ -372,52 +372,92 @@ section{
    background-position:  center;
    background-size: cover;
    background-attachment: fixed;
-   overflow: hidden;
+   /* overflow: hidden; */
    position: relative;
 }
 
-.card{
-   perspective: 150rem;
-   position: relative;
+.card,
+.card__holder{
+   position: absolute;
    height: 20rem;
    width: 16rem;
    border-radius: 3px;  
+   perspective: 150rem;
+   background-color: transparent;
 }
 
 .card__side{
-   height: 20rem;
+   position: relative;
+   height: 100%;
    width: 100%;
-   position: absolute;
-   top: 0;
-   left: 0;
-   backface-visibility: hidden;
    border-radius: 3px;
-   overflow: hidden;
    box-shadow: .1rem .1rem 1rem rgba(0, 0, 0, 0.15);
-   transition: all .8s ease;
+   transition: transform 0.8s ease-out;
+   transform-style: preserve-3d;
+}
+.card__side--front,
+.card__side--back{
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   backface-visibility: hidden;
 }
 .card__side--front{
    background-color: #f1746bc4;
    transform: rotateY(180deg);
+   z-index: 2;
 }
 .card__side--back{
-   background-color: #776536a4;
+   background-image: url(../img/logo-white.png), linear-gradient(#776536, #776536a4);
+   background-size:  contain;
+   background-repeat: no-repeat;
+   z-index: 1;
    /* transform: rotateY(180deg); */
 }
-/*animation-1*/
-/* .card--c1{
+.card__logo{
+   width: 100%;
+   /* overflow: hidden; */
+}
+/* .card:hover .card__side{
+   transform: rotateY(180deg);
+} */
+.card:hover {
+   z-index: 10;
+}
+
+.card__box{
+   height: 20rem;
+   width: 16rem;
+   /* padding: .8rem; */
+   /* border-radius: 5px;
+   border: 2px solid #fff; */
+   color: #fff;
+   margin: 3rem auto;
+   outline-offset: 1rem;
+   outline: 2px solid #fff;
+   -moz-outline-radius: 5px;
+
+}
+.card__box::before{
+   float: left;
+   content: "把卡片放到這裡";
+}
+/*-------------------------------------*/
+
+/*animation-1 從螢幕中間進入畫面*/
+/* .card__holder--1{
    position: absolute;
    top:26%;
    left: 5%;
    transform: translate(38%, 0);
 }
-.card--c2{
+.card__holder--2{
    position: absolute;
    top:38%;
    right: 5%;
    transform: translate(-38%, 0);
 }
-.card--c3{
+.card__holder--3{
    position: absolute;
    top:55%;
    left: 15%;
@@ -427,64 +467,66 @@ section{
    transform: translate(0, 0);
 }  */
 /*-------------------------------------*/
-/* .card--c1{
+
+/*animation-2--1 從底部進入畫面*/
+.card__holder--1{
    position: absolute;
    top:72%;
    left: 24.5%;
    transform: translate(0, 85%)
 }
-.card--c2{
+.card__holder--2{
    position: absolute;
    top:81%;
    left: 5%;
    transform: translate(0, 85%)
 }
-.card--c3{
+.card__holder--3{
    position: absolute;
    top:87%;
    right: 5%;
    transform: translate(0, 85%)
 }
 .slide-in.active{
-   transform: translateY(0%);
-} */
-/*animation-2*/
-.card--c1{
-   position: absolute;
-   top:100%;
-   left: 22%;
+   transform: translate(0%, 0%);
 }
 
-.card--c2{
+/*animation-2--2 從底部進入畫面*/
+/* .card__holder--1{
+   position: absolute;
+   top:100%;
+   left: 26%;
+}
+
+.card__holder--2{
    position: absolute;
    top:108%;
    left: 5%;
 }
 
-.card--c3{
+.card__holder--3{
    position: absolute;
    top:114%;
    right: 5%;
-}
+} */
 
-.slide-in.active{
+/* .slide-in.active{
    transform: translateY(-70%);
-}
-
+} */
 /*-------------------------------------*/
 
-/*animation-3*/ 
-/* .card--c1{
+/*animation-3 從右側方進入畫面*/ 
+/* .card__holder--1{
    position: absolute;
    top:30%;
    right: -51%;
 }
-.card--c2{
+.card__holder--2{
    position: absolute;
    top:38%;
    right: -51%;
 }
-.card--c3{
+.card__holder--3{
    position: absolute;
    top:46%;
    right: -51%;
@@ -493,65 +535,25 @@ section{
    transform: rotate(-20deg);  
    transform-origin: 0% 100%; 
 } */
-
 /*-------------------------------------*/
+
 .slide-in{
    opacity: 0;
    transition: all .5s ease-in-out;
 }
-.card--c1.slide-in{
+.card__holder--1.slide-in{
    transition-delay: 0s;
 }
-.card--c2.slide-in{
+.card__holder--2.slide-in{
    transition-delay: .5s;
 }
-.card--c3.slide-in{
+.card__holder--3.slide-in{
    transition-delay: 1s;
 }
 .slide-in.active{
    opacity: .68;
 }
 /*-------------------------------------*/
-
-.card__logo{
-   width: 100%;
-   /* overflow: hidden; */
-}
-
-.card:hover {
-   z-index: 10;
-}
-
-/* .card:hover .card__side--front{
-   transform: rotateY(0deg);
-}
-.card:hover .card__side--back{
-   transform: rotateY(180deg);
-} */
-
-.card-box{
-   height: 22rem;
-   width: 18rem;
-   border-radius: 5px;
-   border: 2px solid #fff;
-   color: #fff;
-   margin: 2rem auto;
-}
-
-.move{
-   top:28.7%;
-   left: 24.5%;
-}
-.on{
-   transform: rotateY(0deg);
-   transition-delay: 2s;
-}
-.off{
-   transform: rotateY(180deg);
-   transition-delay: 2s;
-}
-
-
 .card__slide-hint {
   color: #666464;
   position: absolute;

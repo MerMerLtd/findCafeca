@@ -34,8 +34,9 @@ function showSlides(n) {
 //element.offsetTop     // 元素距離外層容器(父層元素)上方的距離
 //element.height        // 元素的高度
 
-// STEP1 選擇所有卡片
-const cards = document.querySelectorAll(".card");
+// STEP1 選擇所有卡片盒子
+const cardHolders = document.querySelectorAll(".card__holder");
+
 // 選擇滑動提示
 const hint = document.querySelector(".card__slide-hint");
 
@@ -44,28 +45,28 @@ window.addEventListener("scroll", debounce(scrollHandler));
 
 //STEP3 處理捲軸滾動
 function scrollHandler (){
-    cards.forEach(card =>{
-        //卡片位置Y 
-        const cardY = card.offsetParent.offsetTop + card.offsetTop ;
-        //將瀏覽器視窗底部位置減掉卡片一半高度作為觸發點
-        const slideInAt = window.scrollY + window.innerHeight - card.offsetHeight/2; 
-        // 卡片底部位置
-        const cardBottom = cardY + card.offsetHeight;
-        //當瀏覽器底部跑到卡片一半位置下方時
-        // const isHalfShown = slideInAt > cardY - card.offsetHeight/2 ;//animation2
-        const isHalfShown = slideInAt > cardY - card.offsetHeight;//animation1, animation3
-        // 瀏覽器底部還沒通過卡片底部時
-        const isNotScrolledPast = window.scrollY < cardY + card.offsetHeight/4;//animation2
-        // const isNotScrolledPast = window.scrollY < cardY- card.offsetHeight/2;//animation1, animation3
-        // 若瀏覽器底部超過卡片的一半
-        // 且未通過卡片底部
-        // 就讓卡片現身
+    cardHolders.forEach(cardHolder =>{
+        //卡片盒子位置Y 
+        const cardHolderY = cardHolder.offsetParent.offsetTop + cardHolder.offsetTop ;
+        //將瀏覽器視窗底部位置減掉卡片盒子一半高度作為觸發點
+        const slideInAt = window.scrollY + window.innerHeight - cardHolder.offsetHeight/2; 
+        // 卡片盒子底部位置
+        // const cardHolderBottom = cardHolderY + cardHolder.offsetHeight;
+        //當瀏覽器底部跑到卡片盒子一半位置下方時
+        // const isHalfShown = slideInAt > cardHolderY - cardHolder.offsetHeight/2 ;//animation2
+        const isHalfShown = slideInAt > cardHolderY - cardHolder.offsetHeight;//animation1, animation3
+        // 瀏覽器底部還沒通過卡片盒子底部時
+        const isNotScrolledPast = window.scrollY < cardHolderY + cardHolder.offsetHeight/4;//animation2
+        // const isNotScrolledPast = window.scrollY < cardHolderY- cardHolder.offsetHeight/2;//animation1, animation3
+        // 若瀏覽器底部超過卡片盒子的一半
+        // 且未通過卡片盒子底部
+        // 就讓卡片盒子現身
         // 反之隱藏
         if (isHalfShown && isNotScrolledPast) {
-            card.classList.add('active');
+            cardHolder.classList.add('active');
             hint.classList.add('show');
         } else {
-            card.classList.remove('active');
+            cardHolder.classList.remove('active');
             hint.classList.remove('show');
         }
     }); 
@@ -93,20 +94,14 @@ function debounce(func, wait = 20, immediate = true) {
 
 //----------------------------------------------------------
 // moving hint
-cards.forEach(card => card.addEventListener("mouseover",() => hint.classList.remove('show')));
-cards.forEach(card => card.addEventListener("mouseout",() => hint.classList.add('show')));
+cardHolders.forEach(card => card.addEventListener("mouseover",() => hint.classList.remove('show')));
+cardHolders.forEach(card => card.addEventListener("mouseout",() => hint.classList.add('show')));
 
 //----------------------------------------------------------
 // moving puzzle card
 
-// 已選擇所有卡片 
-// 選擇所有卡片的正面
-const frontSide = document.querySelectorAll(".card__side--front");
-// 選擇所有卡片的背面
-const backSide = document.querySelectorAll(".card__side--back");
-
 //STEP1 監聽卡片上的滑動
-cards.forEach(card => card.addEventListener("touchmove",(event) =>{
+cardHolders.forEach(card => card.addEventListener("touchmove",(event) =>{
 
 }));
 
@@ -143,6 +138,7 @@ getSlideDirection = (startX, startY, endX, endY) => {
 };
 
 //滑動處理
+const cards = document.querySelectorAll(".card");
 let startX, startY, endX, endY, index;
 
 cards.forEach((card, i) => card.addEventListener('touchstart', (event) => {
@@ -158,10 +154,61 @@ cards.forEach(card => card.addEventListener('touchmove', (event) => {
 }));
 let direction = getSlideDirection(startX, startY, endX, endY);
 
-if(direction === 1){
-    cards[index].classList.add(move);
-    frontSide[index].classList.add(on);
-    backSide[index].classList.add(off);
-}
 
-
+//------------------------- drag & drop --------------------------
+//1. https://www.w3schools.com/html/html5_draganddrop.asp
+//2. https://javascript.info/mouse-drag-and-drop
+//3. https://developer.mozilla.org/en-US/docs/Web/Events/drag (用這個)
+var dragged;
+        /* events fired on the draggable target */
+        document.addEventListener("drag", function( event ) {
+      
+        }, false);
+      
+        document.addEventListener("dragstart", function( event ) {
+            ondragstart=event.dataTransfer.setData('text/plain',null);
+            // store a ref. on the dragged elem
+            dragged = event.target;
+            // make it half transparent
+            // event.target.style.opacity = .5;
+        }, false);
+      
+        document.addEventListener("dragend", function( event ) {
+            // reset the transparency
+            event.target.style.opacity = "";
+        }, false);
+      
+        /* events fired on the drop targets */
+        document.addEventListener("dragover", function( event ) {
+            // prevent default to allow drop
+            event.preventDefault();
+        }, false);
+      
+        document.addEventListener("dragenter", function( event ) {
+            // highlight potential drop target when the draggable element enters it
+            if ( event.target.className.includes("dropzone")) {
+                event.target.style.background = "#adadad";
+            }
+      
+        }, false);
+      
+        document.addEventListener("dragleave", function( event ) {
+            // reset background of potential drop target when the draggable element leaves it
+            if ( event.target.className.includes("dropzone")) {
+                event.target.style.background = "";
+            }
+      
+        }, false);
+      
+        document.addEventListener("drop", function( event ) {
+            // prevent default action (open as link for some elements)
+            event.preventDefault();
+            // move dragged elem to the selected drop target
+            if ( event.target.className.includes("dropzone")) {
+                console.log(event.target.className);
+                event.target.style.background = "";
+                dragged.parentNode.removeChild( dragged );
+                event.target.appendChild( dragged );
+            }
+          
+        }, false);
