@@ -168,7 +168,7 @@ let isInCarBox = false;
 const dropZones = document.querySelectorAll(".dropzone");
 
 cards.forEach(card => {
-    card.onmousedown = function(event) {
+    card.ontouchstart = function(event) {
 
         let shiftX = event.clientX - card.getBoundingClientRect().left;
         let shiftY = event.clientY - card.getBoundingClientRect().top;
