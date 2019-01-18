@@ -225,8 +225,12 @@ cards.forEach(card => {
             }
         
             function onTouchMove(event) {
+                event.preventDefault();
                 // console.log(event.changedTouches[0].pageX, event.changedTouches[0].pageY,touchPoint.pageY);
                 moveAt(event.targetTouches[0].pageX, event.targetTouches[0].pageY);
+                isInCarBox = false;
+                //dropZones[0]() 相對於頁面座標
+                // if()
             }
         
             // (3) move the card on mousemove
@@ -240,12 +244,11 @@ cards.forEach(card => {
             card.ondragstart = function() {
                 return false;
               };
+            // dropZones[0].addEventListener("mouseover", (event) => {
+            //     event.target.style.background = "green";
+            // }, false);
         }  
-      }; 
-      dropZones[0].addEventListener("mouseover", (event) => {
-          event.preventDefault();
-          alert(event.target);
-      }, false);
+    }; 
 });
 
 // const down = (event) => {
@@ -305,4 +308,24 @@ cards.forEach(card => {
 //     dropZone.addEventListener("mouseout", out, false);
 // });
 
+
+// var startPosition, endPosition, deltaX ;
+// el.addEventListener('touchstart', function (e) {
+//     var touch = e.touches[0];
+//     startPosition = {
+//         x: touch.pageX,
+//         y: touch.pageY
+//     }
+// });
+
+// el.addEventListener('touchmove', function (e) {
+//     var touch = e.touches[0];
+//     endPosition = {
+//         x: touch.pageX,
+//         y: touch.pageY
+//     }
+
+//     deltaX = endPosition.x - startPosition.x;
+//     deltaY = endPosition.y - startPosition.y;
+// });
 
