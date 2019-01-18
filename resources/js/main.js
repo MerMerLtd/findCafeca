@@ -224,6 +224,7 @@ cards.forEach(card => {
             }
         
             function onTouchMove(event) {
+                event.preventDefault(); 
                 moveAt(event.pageX, event.pageY);
             }
         
