@@ -168,8 +168,8 @@ let isInCarBox = false;
 const dropZones = document.querySelectorAll(".dropzone");
 
 cards.forEach(card => {
-    card.ontouchstart = function(event) {
-
+    card.onmousedown = function(event) {
+        console.log(event);
         let shiftX = event.clientX - card.getBoundingClientRect().left;
         let shiftY = event.clientY - card.getBoundingClientRect().top;
       
@@ -181,6 +181,7 @@ cards.forEach(card => {
       
         // centers the card at (pageX, pageY) coordinates
         function moveAt(pageX, pageY) {
+
           card.style.left = pageX - shiftX + 'px';
           card.style.top = pageY - shiftY + 'px';
         }
@@ -199,10 +200,46 @@ cards.forEach(card => {
         };
       
       };
-      
       card.ondragstart = function() {
         return false;
       };
+
+      // touch
+      card.ontouchstart = function(event) {
+        if(event.targetTouches.length === 1){
+            let touchPoint = event.targetTouches[0]; 
+            let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
+            let shiftY = touchPoint.clientY - card.getBoundingClientRect().top;
+
+            card.style.position = 'absolute';
+            card.style.zIndex = 1000;
+            document.body.append(card);
+        
+            moveAt(touchPoint.pageX, touchPoint.pageY);
+        
+            // centers the card at (pageX, pageY) coordinates
+            function moveAt(pageX, pageY) {
+            card.style.left = pageX - shiftX + 'px';
+            card.style.top = pageY - shiftY + 'px';
+            }
+        
+            function onTouchMove(event) {
+                moveAt(event.pageX, event.pageY);
+            }
+        
+            // (3) move the card on mousemove
+            document.addEventListener('touchmove', onTouchMove);
+        
+            // (4) drop the card, remove unneeded handlers
+            card.ontouchend = function() {
+            document.removeEventListener('touchmove', onTouchMove);
+            card.ontouchend = null;
+            };
+            card.ondragstart = function() {
+                return false;
+              };
+        }  
+      }; 
 });
 
 // const down = (event) => {
