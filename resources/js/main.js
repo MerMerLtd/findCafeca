@@ -206,6 +206,7 @@ cards.forEach(card => {
 
       // touch
       card.ontouchstart = function(event) {
+        event.preventDefault(); 
         if(event.targetTouches.length === 1){
             let touchPoint = event.targetTouches[0]; 
             let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
