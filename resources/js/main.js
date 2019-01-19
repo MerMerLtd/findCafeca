@@ -147,37 +147,41 @@ let answer = [];
 cards.forEach((card, i) => {
 
     //------------------------ sliding card --------------------------
-
     const touchSliding = event => {
         event.preventDefault(); 
         if(event.targetTouches.length === 1){
             console.log("oh yeah!");
             let touchPoint = event.targetTouches[0]
-            let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
-            let shiftY = touchPoint.clientY - card.getBoundingClientRect().top;
-
             startX = touchPoint.pageX; 
             startY = touchPoint.pageY;
-
-            event.target.style.top = event.pageY - shiftY + 'px';
-            event.target.style.left = event.pageX - shiftX + 'px';
-            event.target.style.transfrom = "translate(-3px, -3px)";
 
             document.ontouchmove = event => {
                 event.preventDefault();
                 let touchPoint = event.targetTouches[0]
                 endX = touchPoint.pageX; 
                 endY = touchPoint.pageY;
-
-
             }
 
             document.ontouchend = () => {
                 slideDirection = getSlideDirection(startX, startY, endX, endY);
                 if(slideDirection === 2){
+                    answer.push(0);
+                    card.className += " " + "fadeOutLeft";
+                    isCardBoxEmpty = true;
+                    // add animation fade out left
+
+                    // addEventListener on animation 
+                    // when animation end removeChild
+                    // dropZone.removeChild(card);    
                     console.log("左邊");
+                    console.log(answer);
                 }else if(slideDirection === 4){
+                    answer.push(1);
+                    card.className += " " + "fadeOutRight";
+                    isCardBoxEmpty = true;
+                    // dropZone.removeChild(card);
                     console.log("右邊");
+                    console.log(answer);
                 }else{
                     console.log("請往左或右滑動卡片");
                 }
@@ -299,6 +303,11 @@ cards.forEach((card, i) => {
                     card.className += " " + "flip";
                     card.removeEventListener("touchstart", touchDragging);  
                     card.addEventListener("touchstart", touchSliding, false);
+                    const flipCardAfterAnimaton = event => {
+                        card.style.transform = "rotateY(180deg)";
+                        card.removeEventListener("animationend", flipCardAfterAnimaton);
+                    }
+                    card.addEventListener("animationend", flipCardAfterAnimaton, false);
                 }
                 document.body.removeChild(cardCopy);
                 document.ontouchend = null;
