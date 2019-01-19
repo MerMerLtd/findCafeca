@@ -207,26 +207,37 @@ cards.forEach((card, i) => {
       // touch
       card.ontouchstart = function(event) {
         event.preventDefault(); 
-        if(event.targetTouches.length === 1 && isCardBoxEmpty){
+        if(event.targetTouches.length === 1 && isCardBoxEmpty){ //(start)
             let touchPoint = event.targetTouches[0];//獲取觸摸的初始位置 touchPoint.clientX & touchPoint.clientY
             let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
             let shiftY = touchPoint.clientY - card.getBoundingClientRect().top;
-            let initialPosition = { top: card.offsetTop, left: card.offsetLeft};
-            card.style.position = 'absolute';
-            card.style.zIndex = 10;
-            document.body.append(card);
+
+            //(1)產生卡片複本
+            let cardCopy = document.createElement("div");
+            cardCopy.className= "card__side--back";
+            cardCopy.style.opacity = "0.5";
+            cardCopy.style.position = 'absolute';
+            cardCopy.style.height = card.offsetHeight + "px";
+            cardCopy.style.width = card.offsetWidth + "px";
+
+            //(2) prepare to moving: make absolute and on top by z-index
+            // cardCopy.style.zIndex = -10;
+            document.body.appendChild(cardCopy);
+
+            cardCopy.style.top = touchPoint.pageY - shiftY + 'px';
+            cardCopy.style.left = touchPoint.pageX - shiftX + 'px';
         
             moveAt(touchPoint.pageX, touchPoint.pageY);
         
             // centers the card at (pageX, pageY) coordinates
             function moveAt(pageX, pageY) {
-            card.style.left = pageX - shiftX + 'px';
-            card.style.top = pageY - shiftY + 'px';
+                cardCopy.style.left = pageX - shiftX + 'px';
+                cardCopy.style.top = pageY - shiftY + 'px';
             }
         
-            function onTouchMove(event) {
+            // (3) move the card on mousemove
+            document.ontouchmove = event => {
                 event.preventDefault();
-                // console.log(event.changedTouches[0].pageX, event.changedTouches[0].pageY,touchPoint.pageY);
                 let touchPoint = event.targetTouches[0]
                 moveAt(touchPoint.pageX, touchPoint.pageY);
                 isInCarBox = false;
@@ -235,28 +246,21 @@ cards.forEach((card, i) => {
                     isInCarBox = true;
                     dropZones[0].style.background = "#d2d2d2";
                 }
-                //dropZones[0](188, 1008),( 380, 1008), (380, 1248), (192, 1248) 相對於頁面座標?
             }
         
-            // (3) move the card on mousemove
-            document.addEventListener('touchmove', onTouchMove);
-        
             // (4) drop the card, remove unneeded handlers
-            card.ontouchend = function(event) {
-                console.log(card)
-                console.log(event)
+            document.ontouchend = function() {
                 if(isInCarBox){
-                    card.style.top="0";
-                    card.style.left="0";
                     dropZones[0].appendChild(card);
                     // isCardBoxEmpty = false;
                 }else{
-                    dropZones[0].style.background = "";
                     // card.style.top =  initialPositionA.top +"px";
                     // card.style.left = initialPositionA.left +"px";
                 }
+                document.body.removeChild(cardCopy);
                 document.removeEventListener('touchmove', onTouchMove);
-                card.ontouchend = null;
+                document.onmousemove = null;
+                document.onmouseup = null;
             };
             card.ondragstart = function() {
                 return false;
