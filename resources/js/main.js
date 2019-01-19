@@ -94,8 +94,8 @@ function debounce(func, wait = 20, immediate = true) {
 
 //----------------------------------------------------------
 // moving hint
-cardHolders.forEach(card => card.addEventListener("mouseover",() => hint.classList.remove('show')));
-cardHolders.forEach(card => card.addEventListener("mouseout",() => hint.classList.add('show')));
+// cardHolders.forEach(card => card.addEventListener("mouseover",() => hint.classList.remove('show')));
+// cardHolders.forEach(card => card.addEventListener("mouseout",() => hint.classList.add('show')));
 
 //----------------------------------------------------------
 // moving puzzle card

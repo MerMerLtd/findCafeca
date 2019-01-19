@@ -393,7 +393,8 @@ section{
    border-radius: 3px;
    box-shadow: .1rem .1rem 1rem rgba(0, 0, 0, 0.15);
    /* transition: transform 0.8s ease-out;
-   transform-style: preserve-3d; */
+   transform-style: preserve-3d;
+   transform: rotateY(180deg); */
 }
 .card__side--front,
 .card__side--back{
@@ -402,12 +403,12 @@ section{
    width: 100%;
    backface-visibility: hidden;
 }
-.card__side--front{
-   background-color: #f1746bc4;
+.card__side--back{
    transform: rotateY(180deg);
+   background-color: #f1746bc4;
    z-index: 2;
 }
-.card__side--back{
+.card__side--front{
    background-image: url(../img/logo-white.png), linear-gradient(#776536, #776536a4);
    background-size:  contain;
    background-repeat: no-repeat;
@@ -554,7 +555,7 @@ section{
    transition-delay: 1s;
 }
 .slide-in.active{
-   opacity: .68;
+   opacity: 1;
 }
 /*-------------------------------------*/
 .card__slide-hint {
