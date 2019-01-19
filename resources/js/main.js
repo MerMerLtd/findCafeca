@@ -98,18 +98,23 @@ function debounce(func, wait = 20, immediate = true) {
 // cardHolders.forEach(card => card.addEventListener("mouseout",() => hint.classList.add('show')));
 
 
+//----------------------------------------------------------
+// section-puzzle 卡片的各種操作
+const cards = document.querySelectorAll(".card");
+const dropZone = document.querySelector(".dropzone");
 //移動裝置滑動屏幕方向判斷
 //https://www.itread01.com/content/1531751882.html
 //The atan2() method returns the arctangent of the quotient of its arguments, as a numeric value between PI and -PI radians.(by w3s)
 
 //返回角度
-getSlideAngle = (dx, dy) => Math.atan2(dy, dx)*180/Math.PI;//With atan2(), the y coordinate is passed as the first argument and the x coordinate is passed as the second argument.
+const getSlideAngle = (dx, dy) => Math.atan2(dy, dx)*180/Math.PI;//With atan2(), the y coordinate is passed as the first argument and the x coordinate is passed as the second argument.
 
 //根據起點和終點返回方向判斷1:上，2:左，3:下，4:右，0:未滑動
-getSlideDirection = (startX, startY, endX, endY) => {
+const getSlideDirection = (startX, startY, endX, endY) => {
     let dy = startY - endY;//標準座標系與屏幕座標系的Y軸方向相反
     let dx = endX - startX;
     let result = 0;
+    // console.log("dx: " + dx, "dy: " + dy);
 
     //如果滑動距離太短
     if(Math.abs(dx)<2 && Math.abs(dy)<2){
@@ -117,48 +122,77 @@ getSlideDirection = (startX, startY, endX, endY) => {
     }
 
     let angle = getSlideAngle(dx, dy);
+    // console.log("angle: " + angle);
     if(angle >= 45 && angle < 135){
-        result = 1;
-    }else if(angle >= 135 && angle < 225){
-        result = 2;
-    }else if(angle >= 225 && angle < 315 ){
-        result = 3;
-    }else if(angle >= 315 && angle < 405){
-        result = 4;
+        result = 1; //上
+        // console.log("up");
+    }else if((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)){
+        result = 2; //左
+        // console.log("left");
+    }else if(angle >= -135 && angle < -45){
+        result = 3;// 下
+        // console.log("down");
+    }else if(angle >= -45 && angle < 45){
+        result = 4;// 右
+        // console.log("right");
     }
     return result;
 };
 
-//滑動處理
-const cards = document.querySelectorAll(".card");
-let startX, startY, endX, endY, index;
-
-cards.forEach((card, i) => card.addEventListener('touchstart', (event) => {
-    startX = event.touches[0].pageX; //https://www.w3schools.com/jsref/event_touch_touches.asp
-    startY = event.touches[0].pageY;
-    index = i;
-}));
-
-cards.forEach(card => card.addEventListener('touchmove', (event) => {
-// cards.forEach(card => card.addEventListener('touchend', (event) => {
-    endX = event.changedTouches[0].pageX; 
-    endY = event.changedTouches[0].pageY;
-}));
-let direction = getSlideDirection(startX, startY, endX, endY);
-
-
-//------------------------- drag & drop --------------------------
-
-
 let isCardBoxEmpty = true;
 let isInCarBox = false;
-// const cards = document.querySelectorAll(".card");
-const dropZone = document.querySelector(".dropzone");
+let startX, startY, endX, endY, index, slideDirection;
+let answer = [];
 
-
-// mouse 
 cards.forEach((card, i) => {
-    card.onmousedown = function(event) {
+
+    //------------------------ sliding card --------------------------
+
+    const touchSliding = event => {
+        event.preventDefault(); 
+        if(event.targetTouches.length === 1){
+            console.log("oh yeah!");
+            let touchPoint = event.targetTouches[0]
+            let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
+            let shiftY = touchPoint.clientY - card.getBoundingClientRect().top;
+
+            startX = touchPoint.pageX; 
+            startY = touchPoint.pageY;
+
+            event.target.style.top = event.pageY - shiftY + 'px';
+            event.target.style.left = event.pageX - shiftX + 'px';
+            event.target.style.transfrom = "translate(-3px, -3px)";
+
+            document.ontouchmove = event => {
+                event.preventDefault();
+                let touchPoint = event.targetTouches[0]
+                endX = touchPoint.pageX; 
+                endY = touchPoint.pageY;
+
+
+            }
+
+            document.ontouchend = () => {
+                slideDirection = getSlideDirection(startX, startY, endX, endY);
+                if(slideDirection === 2){
+                    console.log("左邊");
+                }else if(slideDirection === 4){
+                    console.log("右邊");
+                }else{
+                    console.log("請往左或右滑動卡片");
+                }
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            }
+        }
+    }
+
+
+    //------------------------- drag & drop --------------------------
+    // 參考作法: https://javascript.info/mouse-drag-and-drop
+
+    // mouse event
+    const mouseDragging =  event => {
         // console.log(event);
         let shiftX = event.clientX - card.getBoundingClientRect().left;
         let shiftY = event.clientY - card.getBoundingClientRect().top;
@@ -187,20 +221,21 @@ cards.forEach((card, i) => {
             moveAt(event.pageX, event.pageY);
             isInCarBox = false;
             dropZone.style.background = "";
-      //if(到某一範圍內){
+        //if(到某一範圍內){
                 isInCarBox = true;
                 dropZone.style.background = "#d2d2d2";
-            // }
+        // }
         }
     
         // drop the card, remove unneeded handlers
         document.onmouseup = function() {
             if(isInCarBox && isCardBoxEmpty){
-                dropZone.appendChild(card);
-                isCardBoxEmpty = false;
-                card.style.transformStyle = "preserve-3d";
-                // card.style.transition = "transform 0.8s ease-out";
-                card.style.transform = "rotateY(180deg)"
+               dropZone.style.background = "";
+                    dropZone.appendChild(card);
+                    isCardBoxEmpty = false;
+                    card.className += " " + "flip";
+                    card.removeEventListener("mousedown", mouseDragging);  
+                    // card.addEventListener("mousedown", mouseSliding, false);
             }
             document.body.removeChild(cardCopy);
             document.onmousemove = null;
@@ -211,10 +246,12 @@ cards.forEach((card, i) => {
         return false;
       };
 
-    // touch  參考作法: https://javascript.info/mouse-drag-and-drop
-      card.ontouchstart = function(event) {
+    // touch event
+    const touchDragging = event => {
         event.preventDefault(); 
-        if(event.targetTouches.length === 1){ //(start)
+        if(event.targetTouches.length === 1){ 
+            
+            //(start)
             let touchPoint = event.targetTouches[0];//獲取觸摸的初始位置 touchPoint.clientX & touchPoint.clientY
             let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
             let shiftY = touchPoint.clientY - card.getBoundingClientRect().top;
@@ -232,14 +269,14 @@ cards.forEach((card, i) => {
             cardCopy.style.top = touchPoint.pageY - shiftY + 'px';
             cardCopy.style.left = touchPoint.pageX - shiftX + 'px';
         
-            moveAt(touchPoint.pageX, touchPoint.pageY);
-        
             // centers the card at (pageX, pageY) coordinates
-            function moveAt(pageX, pageY) {
+            const moveAt = (pageX, pageY) => {
                 cardCopy.style.left = pageX - shiftX + 'px';
                 cardCopy.style.top = pageY - shiftY + 'px';
             }
-        
+
+            moveAt(touchPoint.pageX, touchPoint.pageY);
+            
             // move the card on mousemove
             document.ontouchmove = event => {
                 event.preventDefault();
@@ -254,21 +291,22 @@ cards.forEach((card, i) => {
             }
         
             // drop the card, remove unneeded handlers
-            document.ontouchend = function(event) {
+            document.ontouchend = () => {
                 if(isInCarBox && isCardBoxEmpty){
                     dropZone.style.background = "";
                     dropZone.appendChild(card);
                     isCardBoxEmpty = false;
                     card.className += " " + "flip";
+                    card.removeEventListener("touchstart", touchDragging);  
+                    card.addEventListener("touchstart", touchSliding, false);
                 }
                 document.body.removeChild(cardCopy);
                 document.ontouchend = null;
                 document.ontouchmove = null;
             }
-        }  
-    }; 
+        }
+    }
+    card.addEventListener("mousedown", mouseDragging, false); 
+    card.addEventListener("touchstart", touchDragging, false);
+
 });
-
-
-
-
