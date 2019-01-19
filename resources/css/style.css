@@ -417,18 +417,18 @@ section{
 }
 @keyframes fadeOutLeft{
    0%{
-      transform: rotateY(180deg);
+      transform: rotateY(180deg) rotate(0deg);
    }
    100%{
-      transform: rotateY(-180deg) translate(150%, 80%);
+      transform: rotateY(-180deg) rotate(180deg) translate(-180%, -80%);
    }
 }
 @keyframes fadeOutRight{
    0%{
-      transform: rotateY(180deg);
+      transform: rotateY(180deg) rotate(0deg);
    }
    100%{
-      transform: rotateY(-180deg) translate(-150%, 80%);
+      transform: rotateY(-180deg)rotate(180deg) translate(180%, -80%);
    }
 }
 .card__side--front,
