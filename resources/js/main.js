@@ -253,9 +253,8 @@ cards.forEach((card, i) => {
                     // isCardBoxEmpty = false;
                 }
                 document.body.removeChild(cardCopy);
-                document.removeEventListener('touchmove', onTouchMove);
                 document.ontouchend = null;
-                // card.ontouchend = null;
+                document.ontouchmove = null;
             }
         }  
     }; 
