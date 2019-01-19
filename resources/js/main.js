@@ -220,8 +220,6 @@ cards.forEach((card, i) => {
             cardCopy.style.height = card.offsetHeight + "px";
             cardCopy.style.width = card.offsetWidth + "px";
 
-            //(2) prepare to moving: make absolute and on top by z-index
-            // cardCopy.style.zIndex = -10;
             document.body.appendChild(cardCopy);
 
             cardCopy.style.top = touchPoint.pageY - shiftY + 'px';
@@ -253,21 +251,12 @@ cards.forEach((card, i) => {
                 if(isInCarBox){
                     dropZones[0].appendChild(card);
                     // isCardBoxEmpty = false;
-                }else{
-                    // card.style.top =  initialPositionA.top +"px";
-                    // card.style.left = initialPositionA.left +"px";
                 }
                 document.body.removeChild(cardCopy);
                 document.removeEventListener('touchmove', onTouchMove);
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
-            card.ondragstart = function() {
-                return false;
-              };
-            // dropZones[0].addEventListener("mouseover", (event) => {
-            //     event.target.style.background = "green";
-            // }, false);
+                document.ontouchend = null;
+                // card.ontouchend = null;
+            }
         }  
     }; 
 });
