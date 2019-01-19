@@ -1,3 +1,111 @@
+//------------------------------滑屏-------------
+//參考https://github.com/git-onepixel/guesture/edit/master/js/app.js
+//https://www.cnblogs.com/onepixel/p/5300445.html
+
+let currentPosition = 0; // 紀錄當前頁面位置
+let pageNow = 1; // 當前頁碼
+let points = null // 頁碼數
+
+const viewport =  document.querySelector('.viewport');
+let pageHeight = window.innerHeight; // 頁面寬度
+let maxHeight =  -pageHeight * 3; // 頁面滑動到最後一夜的位置
+let initialPos = 0;  // 手指按下的屏幕位置
+let moveLength = 0;  // 手指当前滑动的距离
+let direction = 'left'; // 滑动的方向
+let isMove = false; // 是否发生左右滑动
+let startT = 0; // 记录手指按下去的时间
+let isTouchEnd = true; // 标记当前滑动是否结束(手指已离开屏幕)  
+ 
+//頁面平移 
+const transform = (translate) =>{
+    this.style.webkitTransform = 'translate3d( 0,' + translate + 'px, 0)';
+    currentPosition = translate;
+}
+    
+ // 手指放在屏幕上
+ viewport.addEventListener('touchstart', function (event) {
+    event.preventDefault();
+    // 单手指触摸或者多手指同时触摸，禁止第二个手指延迟操作事件
+    if (event.targetTouches.length === 1 || isTouchEnd) {
+        let touchPoint = event.targetTouches[0];
+        startX = touchPoint.pageX;
+        startY = touchPoint.pageY;
+        initialPos = currentPosition;   // 本次滑动前的初始位置
+        viewport.style.webkitTransition = ''; // 取消动画效果
+        startT = + new Date(); // 记录手指按下的开始时间
+        isMove = false; // 是否产生滑动
+        isTouchEnd = false; // 当前滑动开始
+    }
+}.bind(this), false);
+
+// 手指在屏幕上滑动，页面跟随手指移动
+viewport.addEventListener('touchmove', function (event) {
+    event.preventDefault();
+    // 如果当前滑动已结束，不管其他手指是否在屏幕上都禁止该事件
+    if (isTouchEnd) return ;
+       
+    let touchPoint = event.targetTouches[0];
+    let deltaX = touchPoint.pageX - startX;
+    let deltaY = touchPoint.pageY - startY;
+    
+    let translate = initialPos + deltaY; // 当前需要移动到的位置
+    // 如果translate>0 或 < maxHeight,则表示页面超出边界
+    if (translate > 0) {
+       translate = 0; 
+    }
+    if (translate < maxHeight) {
+       translate = maxHeight; 
+    }
+    deltaY = translate - initialPos;
+    this.transform.call(viewport, translate);
+    isMove = true;
+    moveLength = deltaY;
+    direction = deltaY > 0 ? 'down' : 'up'; // 判断手指滑动的方向
+}.bind(this),false);
+
+// 手指离开屏幕时，计算最终需要停留在哪一页
+viewport.addEventListener('touchend', function (event) {
+    event.preventDefault();
+    translate = 0;
+    // 计算手指在屏幕上停留的时间
+    let deltaT = + new Date() - startT;
+    // 发生了滑动，并且当前滑动事件未结束
+    if (isMove && !isTouchEnd) { 
+         isTouchEnd = true; // 标记当前完整的滑动事件已经结束 
+         // 使用动画过渡让页面滑动到最终的位置
+         viewport.style.webkitTransition = '0.3s ease -webkit-transform';
+         if (deltaT < 300) { // 如果停留时间小于300ms,则认为是快速滑动，无论滑动距离是多少，都停留到下一页
+             if (currentPosition === 0 && translate === 0) {
+                 return ;
+             }
+             translate = direction === 'up' ? 
+                 currentPosition - (pageHeight + moveLength) 
+                 : currentPosition + pageHeight - moveLength;
+             // 如果最终位置超过边界位置，则停留在边界位置
+             // 上边界
+             translate = translate > 0 ? 0 : translate; 
+             // 下边界
+             translate = translate < maxHeight ? maxHeight : translate; 
+         } else {
+             // 如果滑动距离小于屏幕的50%，则退回到上一页
+             if (Math.abs(moveLength) / pageHeight < 0.5) {
+                 translate = currentPosition - moveLength;
+             } else {
+                 // 如果滑动距离大于屏幕的50%，则滑动到下一页
+                 translate = direction === 'down'?
+                 currentPosition - (pageHeight + moveLength) 
+                 : currentPosition + pageHeight - moveLength;
+                 translate = translate > 0 ? 0 : translate;
+                 translate = translate < maxHeight ? maxHeight : translate;
+             }
+         }
+         // 执行滑动，让页面完整的显示到屏幕上
+         this.transform.call(viewport, translate);
+
+     }
+}.bind(this), false);
+
+//--------------------------
 // header slide-image
 let slideIndex = 1;
 showSlides(slideIndex);
@@ -25,6 +133,43 @@ function showSlides(n) {
     slides[slideIndex-1].style.display = "block";  
     dots[slideIndex-1].className += " active";
 }
+
+// 可以滑動換slide
+const slideImgs = document.querySelectorAll(".slide");
+slideImgs.forEach( slideImg => {
+    const touchSlidingImg = event => {
+        event.preventDefault();
+        if(event.targetTouches.length === 1){
+            let touchPoint = event.targetTouches[0];
+            let startX, startY, endX, endY, slideDirection;
+            startX = touchPoint.pageX; 
+            startY = touchPoint.pageY;
+
+            document.ontouchmove = event => {
+                event.preventDefault();
+                let touchPoint = event.targetTouches[0]
+                endX = touchPoint.pageX; 
+                endY = touchPoint.pageY;
+            }
+
+            document.ontouchend = () => {
+                slideDirection = getSlideDirection(startX, startY, endX, endY);
+                if(slideDirection === 2){
+                    currentSlide(slideIndex+1);
+                    console.log("left")
+                }else if(slideDirection === 4){
+                    currentSlide(slideIndex-1);
+                    console.log("right");
+                }else{
+                    console.log("Nothing will happen");
+                }
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            }
+        }
+    }
+    slideImg.addEventListener("touchstart", touchSlidingImg, false);
+});
 
 //----------------------------------------------------------
 // slide in puzzle card on scroll
@@ -64,6 +209,7 @@ function scrollHandler (){
         // 反之隱藏
         if (isHalfShown && isNotScrolledPast) {
             cardHolder.classList.add('active');
+            
             // hint.classList.add('show');
         } else {
             cardHolder.classList.remove('active');
@@ -167,19 +313,13 @@ cards.forEach((card, i) => {
                 if(slideDirection === 2){
                     answer.push(0);
                     card.className += " " + "fadeOutLeft";
-                    isCardBoxEmpty = true;
-                    // add animation fade out left
-
-                    // addEventListener on animation 
-                    // when animation end removeChild
-                    // dropZone.removeChild(card);    
+                    isCardBoxEmpty = true;    
                     console.log("左邊");
                     console.log(answer);
                 }else if(slideDirection === 4){
                     answer.push(1);
                     card.className += " " + "fadeOutRight";
                     isCardBoxEmpty = true;
-                    // dropZone.removeChild(card);
                     console.log("右邊");
                     console.log(answer);
                 }else{
@@ -288,7 +428,7 @@ cards.forEach((card, i) => {
                 moveAt(touchPoint.pageX, touchPoint.pageY);
                 isInCarBox = false;
                 dropZone.style.background = "";
-                if(touchPoint.pageX >= 70 && touchPoint.pageX <= 380 && touchPoint.pageY >= 900 && touchPoint.pageY <= 1250 ){
+                if(touchPoint.pageX >= 10 && touchPoint.pageX <= 380 && touchPoint.pageY >= 900 && touchPoint.pageY <= 1350 ){
                     isInCarBox = true;
                     dropZone.style.background = "#d2d2d2";
                 }
@@ -317,5 +457,5 @@ cards.forEach((card, i) => {
     }
     card.addEventListener("mousedown", mouseDragging, false); 
     card.addEventListener("touchstart", touchDragging, false);
-
 });
+ 

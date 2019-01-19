@@ -116,9 +116,9 @@ body {
    width: 100%;
 }
 
-section{
-   padding: 1rem;
-}
+/* section{
+    padding: 1rem; 
+} */
 
 /*----------------------------------------*/
 /* NAVIGATION */
@@ -282,7 +282,7 @@ section{
    overflow: hidden;
 }
 .slide__img {
-   width: 100%;
+   width: 100vw;
    vertical-align: middle;
 }
 
@@ -290,7 +290,7 @@ section{
 .prev, .next {
   cursor: pointer;
   position: absolute;
-  top: 50%;
+  top: 40%;
   width: auto;
   padding: 16px;
   margin-top: -22px;
@@ -317,7 +317,7 @@ section{
 /* The dots/bullets/indicators */
 .dot-box{
    position: absolute;
-   top: 2rem;
+   top: 15%;
    width: 100%;
    text-align: center;
 }
@@ -374,6 +374,7 @@ section{
    background-attachment: fixed;
    overflow: hidden;
    position: relative;
+   padding: 1rem;
 }
 
 .card,
@@ -718,6 +719,7 @@ section{
 .section-recommand{
    background-color: #ece9e7;
    height: 100vh;
+   position: 1rem;
 }
 
 .recommand__coffee{
@@ -825,3 +827,14 @@ footer p{
    margin-top: 20px;
 }
 
+/* 打造絲緞般滑順的 html5 */
+.viewport{
+   height: 400%;
+   width: 100%;
+   display: -webkit-box;
+   overflow: hidden;
+   -webkit-transform: translate3d(0,0,0);
+   transform: translate3d(0,0,0);
+   backface-visibility: hidden;
+   position: relative;
+}
