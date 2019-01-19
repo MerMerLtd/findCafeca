@@ -392,9 +392,21 @@ section{
    width: 100%;
    border-radius: 3px;
    box-shadow: .1rem .1rem 1rem rgba(0, 0, 0, 0.15);
-   /* transition: transform 0.8s ease-out;
+}
+.flip{
+   transition: transform 10s ease-out;
    transform-style: preserve-3d;
-   transform: rotateY(180deg); */
+   animation: flip 1s ease .5s;
+   animation-fill-mode: forwards;
+}
+
+@keyframes flip{
+   0%{
+      transform: rotateY(0deg); 
+   }
+   100%{
+      transform: rotateY(180deg) ;
+   }
 }
 .card__side--front,
 .card__side--back{

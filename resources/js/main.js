@@ -149,59 +149,77 @@ let direction = getSlideDirection(startX, startY, endX, endY);
 
 //------------------------- drag & drop --------------------------
 
+
 let isCardBoxEmpty = true;
 let isInCarBox = false;
-
-
 // const cards = document.querySelectorAll(".card");
-const dropZones = document.querySelectorAll(".dropzone");
+const dropZone = document.querySelector(".dropzone");
 
+
+// mouse 
 cards.forEach((card, i) => {
     card.onmousedown = function(event) {
         // console.log(event);
         let shiftX = event.clientX - card.getBoundingClientRect().left;
         let shiftY = event.clientY - card.getBoundingClientRect().top;
       
-        card.style.position = 'absolute';
-        card.style.zIndex = 1000;
-        document.body.append(card);
+        //(1)產生卡片複本 參考作法: https://blog.csdn.net/ldw201510803006/article/details/75205821
+        let cardCopy = document.createElement("div");
+        cardCopy.className= "card__side--front";
+        cardCopy.style.opacity = "0.5";
+        cardCopy.style.position = 'absolute';
+        cardCopy.style.height = card.offsetHeight + "px";
+        cardCopy.style.width = card.offsetWidth + "px";
+
+        document.body.appendChild(cardCopy);
       
         moveAt(event.pageX, event.pageY);
       
-        // centers the card at (pageX, pageY) coordinates
+        // centers the cardCopy at (pageX, pageY) coordinates
         function moveAt(pageX, pageY) {
-
-          card.style.left = pageX - shiftX + 'px';
-          card.style.top = pageY - shiftY + 'px';
+            cardCopy.style.left = pageX - shiftX + 'px';
+            cardCopy.style.top = pageY - shiftY + 'px';
         }
-      
-        function onMouseMove(event) {
-          moveAt(event.pageX, event.pageY);
+    
+        // move the card on mousemove
+        document.onmousemove = event => {
+            event.preventDefault();
+            moveAt(event.pageX, event.pageY);
+            isInCarBox = false;
+            dropZone.style.background = "";
+      //if(到某一範圍內){
+                isInCarBox = true;
+                dropZone.style.background = "#d2d2d2";
+            // }
         }
-      
-        // (3) move the card on mousemove
-        document.addEventListener('mousemove', onMouseMove);
-      
-        // (4) drop the card, remove unneeded handlers
-        card.onmouseup = function() {
-          document.removeEventListener('mousemove', onMouseMove);
-          card.onmouseup = null;
-        };
-      
-      };
+    
+        // drop the card, remove unneeded handlers
+        document.onmouseup = function() {
+            if(isInCarBox && isCardBoxEmpty){
+                dropZone.appendChild(card);
+                isCardBoxEmpty = false;
+                card.style.transformStyle = "preserve-3d";
+                // card.style.transition = "transform 0.8s ease-out";
+                card.style.transform = "rotateY(180deg)"
+            }
+            document.body.removeChild(cardCopy);
+            document.onmousemove = null;
+            document.onmouseup = null;
+        }
+    }  
       card.ondragstart = function() {
         return false;
       };
 
-      // touch
+    // touch  參考作法: https://javascript.info/mouse-drag-and-drop
       card.ontouchstart = function(event) {
         event.preventDefault(); 
-        if(event.targetTouches.length === 1 && isCardBoxEmpty){ //(start)
+        if(event.targetTouches.length === 1){ //(start)
             let touchPoint = event.targetTouches[0];//獲取觸摸的初始位置 touchPoint.clientX & touchPoint.clientY
             let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
             let shiftY = touchPoint.clientY - card.getBoundingClientRect().top;
 
-            //(1)產生卡片複本
+            //(1)產生卡片複本 參考作法: https://blog.csdn.net/ldw201510803006/article/details/75205821
             let cardCopy = document.createElement("div");
             cardCopy.className= "card__side--front";
             cardCopy.style.opacity = "0.5";
@@ -222,24 +240,26 @@ cards.forEach((card, i) => {
                 cardCopy.style.top = pageY - shiftY + 'px';
             }
         
-            // (3) move the card on mousemove
+            // move the card on mousemove
             document.ontouchmove = event => {
                 event.preventDefault();
                 let touchPoint = event.targetTouches[0]
                 moveAt(touchPoint.pageX, touchPoint.pageY);
                 isInCarBox = false;
-                dropZones[0].style.background = "";
+                dropZone.style.background = "";
                 if(touchPoint.pageX >= 70 && touchPoint.pageX <= 380 && touchPoint.pageY >= 900 && touchPoint.pageY <= 1250 ){
                     isInCarBox = true;
-                    dropZones[0].style.background = "#d2d2d2";
+                    dropZone.style.background = "#d2d2d2";
                 }
             }
         
-            // (4) drop the card, remove unneeded handlers
-            document.ontouchend = function() {
-                if(isInCarBox){
-                    dropZones[0].appendChild(card);
-                    // isCardBoxEmpty = false;
+            // drop the card, remove unneeded handlers
+            document.ontouchend = function(event) {
+                if(isInCarBox && isCardBoxEmpty){
+                    dropZone.style.background = "";
+                    dropZone.appendChild(card);
+                    isCardBoxEmpty = false;
+                    card.className += " " + "flip";
                 }
                 document.body.removeChild(cardCopy);
                 document.ontouchend = null;
@@ -248,4 +268,7 @@ cards.forEach((card, i) => {
         }  
     }; 
 });
+
+
+
 
