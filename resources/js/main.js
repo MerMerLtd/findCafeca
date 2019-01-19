@@ -38,7 +38,7 @@ function showSlides(n) {
 const cardHolders = document.querySelectorAll(".card__holder");
 
 // 選擇滑動提示
-const hint = document.querySelector(".card__slide-hint");
+// const hint = document.querySelector(".card__slide-hint");
 
 // STEP2 監聽 window 捲動滾動事件
 window.addEventListener("scroll", debounce(scrollHandler));
@@ -64,10 +64,10 @@ function scrollHandler (){
         // 反之隱藏
         if (isHalfShown && isNotScrolledPast) {
             cardHolder.classList.add('active');
-            hint.classList.add('show');
+            // hint.classList.add('show');
         } else {
             cardHolder.classList.remove('active');
-            hint.classList.remove('show');
+            // hint.classList.remove('show');
         }
     }); 
 }
@@ -167,7 +167,7 @@ let isInCarBox = false;
 // const cards = document.querySelectorAll(".card");
 const dropZones = document.querySelectorAll(".dropzone");
 
-cards.forEach(card => {
+cards.forEach((card, i) => {
     card.onmousedown = function(event) {
         // console.log(event);
         let shiftX = event.clientX - card.getBoundingClientRect().left;
@@ -211,9 +211,9 @@ cards.forEach(card => {
             let touchPoint = event.targetTouches[0];//獲取觸摸的初始位置 touchPoint.clientX & touchPoint.clientY
             let shiftX = touchPoint.clientX - card.getBoundingClientRect().left;
             let shiftY = touchPoint.clientY - card.getBoundingClientRect().top;
-
+            let initialPosition = { top: card.offsetTop, left: card.offsetLeft};
             card.style.position = 'absolute';
-            card.style.zIndex = 1000;
+            card.style.zIndex = 10;
             document.body.append(card);
         
             moveAt(touchPoint.pageX, touchPoint.pageY);
@@ -227,19 +227,36 @@ cards.forEach(card => {
             function onTouchMove(event) {
                 event.preventDefault();
                 // console.log(event.changedTouches[0].pageX, event.changedTouches[0].pageY,touchPoint.pageY);
-                moveAt(event.targetTouches[0].pageX, event.targetTouches[0].pageY);
+                let touchPoint = event.targetTouches[0]
+                moveAt(touchPoint.pageX, touchPoint.pageY);
                 isInCarBox = false;
-                //dropZones[0]() 相對於頁面座標
-                // if()
+                dropZones[0].style.background = "";
+                if(touchPoint.pageX >= 70 && touchPoint.pageX <= 380 && touchPoint.pageY >= 900 && touchPoint.pageY <= 1250 ){
+                    isInCarBox = true;
+                    dropZones[0].style.background = "#d2d2d2";
+                }
+                //dropZones[0](188, 1008),( 380, 1008), (380, 1248), (192, 1248) 相對於頁面座標?
             }
         
             // (3) move the card on mousemove
             document.addEventListener('touchmove', onTouchMove);
         
             // (4) drop the card, remove unneeded handlers
-            card.ontouchend = function() {
-            document.removeEventListener('touchmove', onTouchMove);
-            card.ontouchend = null;
+            card.ontouchend = function(event) {
+                console.log(card)
+                console.log(event)
+                if(isInCarBox){
+                    card.style.top="0";
+                    card.style.left="0";
+                    dropZones[0].appendChild(card);
+                    // isCardBoxEmpty = false;
+                }else{
+                    dropZones[0].style.background = "";
+                    // card.style.top =  initialPositionA.top +"px";
+                    // card.style.left = initialPositionA.left +"px";
+                }
+                document.removeEventListener('touchmove', onTouchMove);
+                card.ontouchend = null;
             };
             card.ondragstart = function() {
                 return false;
