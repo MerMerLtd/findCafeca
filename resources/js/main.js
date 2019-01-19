@@ -97,15 +97,7 @@ function debounce(func, wait = 20, immediate = true) {
 // cardHolders.forEach(card => card.addEventListener("mouseover",() => hint.classList.remove('show')));
 // cardHolders.forEach(card => card.addEventListener("mouseout",() => hint.classList.add('show')));
 
-//----------------------------------------------------------
-// moving puzzle card
 
-//STEP1 監聽卡片上的滑動
-cardHolders.forEach(card => card.addEventListener("touchmove",(event) =>{
-
-}));
-
-//-------------------------------------------------------------
 //移動裝置滑動屏幕方向判斷
 //https://www.itread01.com/content/1531751882.html
 //The atan2() method returns the arctangent of the quotient of its arguments, as a numeric value between PI and -PI radians.(by w3s)
@@ -159,10 +151,7 @@ let direction = getSlideDirection(startX, startY, endX, endY);
 
 let isCardBoxEmpty = true;
 let isInCarBox = false;
-// let isDraggable = false; // 只有持續點滑鼠或是單指持續接觸obj時才可以拖移
-// let draggedObj = null;
-// let touchPoint = null;
-// let shiftX, shiftY = 0;// 記住手指點在卡片上的位置
+
 
 // const cards = document.querySelectorAll(".card");
 const dropZones = document.querySelectorAll(".dropzone");
@@ -214,7 +203,7 @@ cards.forEach((card, i) => {
 
             //(1)產生卡片複本
             let cardCopy = document.createElement("div");
-            cardCopy.className= "card__side--back";
+            cardCopy.className= "card__side--front";
             cardCopy.style.opacity = "0.5";
             cardCopy.style.position = 'absolute';
             cardCopy.style.height = card.offsetHeight + "px";
@@ -259,82 +248,4 @@ cards.forEach((card, i) => {
         }  
     }; 
 });
-
-// const down = (event) => {
-//     let ev = event || window.event;
-//     ev.preventDefault();
-//     // if(ev.targetTouches.length === 1){
-//         // touchPoint = ev.targetTouches[0] || null;
-//         isDraggable = true
-//         draggedObj = ev.target.parentNode.parentNode;
-//         // document.body.append(draggedObj);
-//         // console.log(draggedObj);
-
-//     // }
-// }
-// const move = (event) => {
-//     let ev = event || window.event;
-//     ev.preventDefault();
-//     if(isDraggable){
-//         console.log(ev.clientX, ev.clientY, "client");
-//         console.log(draggedObj.getBoundingClientRect().left, draggedObj.getBoundingClientRect().top, "getBoundingClientRect");
-//         console.log(ev.pageX, ev.pageY, "page")
-//         shiftX = ev.clientX - draggedObj.getBoundingClientRect().left;
-//         shiftY = ev.clientY - draggedObj.getBoundingClientRect().top;
-//         draggedObj.style.zIndex = "10";
-//         draggedObj.style.left = ev.clientX - shiftX + "px";
-//         draggedObj.style.top = ev.clientY - shiftY + "px";
-//         console.log(draggedObj);
-//     }
-// }
-// const up = (event) => {
-//     let ev = event || window.event;
-//     isDraggable = false
-//     // draggedObj = null;
-// }
-// const over = (event) => {
-//     let ev = event || window.event;
-// }
-// const out = (event) => {
-//     let ev = event || window.event;
-// }
-
-
-// cards.forEach(card => {
-//     // 網頁版
-//     card.addEventListener("mousedown", down, false);
-//     card.addEventListener("mousemove", move, false);
-//     card.addEventListener("mouseup", up, false);
-
-//     //行動端
-//     card.addEventListener("touchstart", down, false);
-//     card.addEventListener("touchmove", move, false);
-//     card.addEventListener("touchend", up, false);
-// });
-
-// dropZones.forEach(dropZone => {
-//     dropZone.addEventListener("mouseover", over, false);
-//     dropZone.addEventListener("mouseout", out, false);
-// });
-
-
-// var startPosition, endPosition, deltaX ;
-// el.addEventListener('touchstart', function (e) {
-//     var touch = e.touches[0];
-//     startPosition = {
-//         x: touch.pageX,
-//         y: touch.pageY
-//     }
-// });
-
-// el.addEventListener('touchmove', function (e) {
-//     var touch = e.touches[0];
-//     endPosition = {
-//         x: touch.pageX,
-//         y: touch.pageY
-//     }
-
-//     deltaX = endPosition.x - startPosition.x;
-//     deltaY = endPosition.y - startPosition.y;
-// });
 
