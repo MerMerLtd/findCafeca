@@ -267,7 +267,9 @@ body {
 /*----------------------------------------*/
 /* HEADER */
 /*----------------------------------------*/
-
+.header{
+   height: 100vh;
+}
 /* Slideshow container */
 .slideshow-container {
   width: 100vw;
@@ -368,6 +370,7 @@ body {
 /*----------------------------------------*/
 .section-puzzle{
    height: 100vh;
+   width: 100%;
    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), #ffffff80), url(./img/bg1.jpeg);
    background-position:  center;
    background-size: cover;
@@ -634,10 +637,14 @@ body {
 }
 
 /*----------------------------------------*/
-/* SEAT */
+/* section-shopinfo */
 /*----------------------------------------*/
-.section-seat{
-   padding: 8rem 1rem 7rem;
+
+.section-shopinfo{
+   height: 100vh;
+}
+.heading-box{
+   padding: 6rem 1rem 4rem;
    position: relative;
 }
 
@@ -716,10 +723,9 @@ body {
 /*----------------------------------------*/
 /* RECOMMAND */
 /*----------------------------------------*/
-.section-recommand{
+.recommand{
    background-color: #ece9e7;
-   height: 100vh;
-   position: 1rem;
+   padding-bottom: 6rem;
 }
 
 .recommand__coffee{
@@ -828,7 +834,7 @@ footer p{
 }
 
 /* 打造絲緞般滑順的 html5 */
-.viewport{
+/* .viewport{
    height: 400%;
    width: 100%;
    display: -webkit-box;
@@ -837,4 +843,4 @@ footer p{
    transform: translate3d(0,0,0);
    backface-visibility: hidden;
    position: relative;
-}
+} */
